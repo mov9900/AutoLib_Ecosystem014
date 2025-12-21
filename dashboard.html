@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="tailwind.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Firebase SDKs -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2-ZSnxGhMSbpxR9lWipQ-JX4s8Fz3j8Q",
+            authDomain: "librarymanagement-80741.firebaseapp.com",
+            projectId: "librarymanagement-80741",
+            storageBucket: "librarymanagement-80741.firebasestorage.app",
+            messagingSenderId: "7076696675",
+            appId: "1:7076696675:web:ff0f1965ca544627ab1e56"
+        
+        };
+
+    </script>
+</head>
+
+<body>
+
+    <body class="bg-background min-h-screen">
+        <!-- Desktop Sidebar -->
+        <div class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
+            <div class="flex min-h-0 flex-1 flex-col bg-primary">
+                <!-- Logo Section -->
+                <div class="flex h-16 flex-shrink-0 items-center px-4">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-book-open text-primary text-lg"></i>
+                        </div>
+                        <h1 class="text-white text-lg font-semibold">AutoLib Ecosystem</h1>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="mt-5 flex-1 space-y-1 px-2">
+                    <a href="library_dashboard.html"
+                        class="bg-primary-600 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                        <i class="fas fa-chart-line mr-3 text-white"></i>
+                        Dashboard
+                    </a>
+                    <a href="book.html"
+                        class="text-primary-100 hover:bg-primary-600 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                        <i class="fas fa-book mr-3 text-primary-200 group-hover:text-white"></i>
+                        BOOKS
+                    </a>
+                    <a href="index.html"
+                        class="text-primary-100 hover:bg-primary-600 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                        <i class="fas fa-sign-out-alt text-xl mr-3 text-primary-200 group-hover:text-white"></i>
+                        LOGOUT
+                    </a>
+                </nav>
+
+                <!-- User Profile -->
+                <div class="flex flex-shrink-0 p-4">
+                    <div class="flex items-center">
+                        <img class="inline-block h-9 w-9 rounded-full"
+                            src="https://unsplash.com/photos/close-up-photo-of-orange-and-pink-tulips-jLZVBAICew0"
+                            alt="User avatar"
+                            onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;" />
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-white">USER  <span id="welcomeUserName"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="lg:hidden">
+            <!-- Mobile Header -->
+            <div class="flex items-center justify-between bg-primary px-4 py-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-book-open text-primary text-lg"></i>
+                    </div>
+                    <h1 class="text-white text-lg font-semibold">Edushelf</h1>
+                </div>
+                <button id="mobileMenuBtn" class="text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Overlay -->
+            <div id="mobileMenu" class="fixed inset-0 z-50 hidden">
+                <div class="fixed inset-0 bg-black bg-opacity-50" id="mobileMenuOverlay"></div>
+                <div class="fixed inset-y-0 left-0 w-64 bg-primary transform -translate-x-full transition-transform duration-300"
+                    id="mobileMenuPanel">
+                    <div class="flex items-center justify-between p-4 border-b border-primary-600">
+                        <h2 class="text-white text-lg font-semibold">Menu</h2>
+                        <button id="closeMobileMenu" class="text-white">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <nav class="mt-5 space-y-1 px-2">
+                        <a href="library_dashboard.html"
+                            class="bg-primary-600 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            Dashboard
+                        </a>
+                        <a href="book.html"
+                            class="text-primary-100 hover:bg-primary-600 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                            <i class="fas fa-book mr-3"></i>
+                            BOOKS
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="lg:pl-64">
+            <div class="flex flex-col">
+                <!-- Header -->
+                <header class="bg-white shadow-sm border-b border-gray-200">
+                    <div class="px-4 sm:px-6 lg:px-8">
+                        <div class="flex h-16 items-center justify-between">
+                            <div class="flex items-center">
+                                <h1 class="text-2xl font-semibold text-gray-900">WELCOME <span id="welcomeUserName"></span></h1>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <button class="p-2 text-gray-400 hover:text-gray-500 transition-colors"
+                                    id="qrScannerBtn">
+                                    <i class="fas fa-qrcode text-xl"></i>
+                                </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Main Dashboard Content -->
+                <main class="flex-1 pb-8">
+                    <div class="px-4 sm:px-6 lg:px-8 py-8">
+                        <!-- Metrics Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <!-- Overdue Books Card -->
+                            <div
+                                class="bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl p-6 border border-primary-200">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-primary-600 text-sm font-medium uppercase tracking-wide">Check
+                                            in/out</p>
+                                        <p id="overdueBooksCount" class="text-3xl font-bold text-primary-800 mt-2">0</p>
+                                    </div>
+                                    <div class="w-12 h-12 bg-primary-300 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-book text-primary-700 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Books borrowed Card -->
+                            <div
+                                class="bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-xl p-6 border border-secondary-200">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-secondary-600 text-sm font-medium uppercase tracking-wide">
+                                            History(logs)</p>
+                                        <p class="text-3xl font-bold text-secondary-800 mt-2" id="booksBorrowedCount">0
+                                        </p>
+                                    </div>
+                                    <div class="w-12 h-12 bg-secondary-300 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-users text-secondary-700 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Books Due soon Card -->
+                            <div
+                                class="bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl p-6 border border-accent-200">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-accent-600 text-sm font-medium uppercase tracking-wide">BOOKS
+                                        </p>
+                                        <p class="text-3xl font-bold text-accent-800 mt-2" id="booksDueSoonCount">0</p>
+                                    </div>
+                                    <div class="w-12 h-12 bg-accent-300 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-exchange-alt text-accent-700 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        </main>
+        </div>
+        </div>
+        
+        <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2">
+            <div class="flex justify-around">
+                <a href="dashboard.html" class="flex flex-col items-center py-2 text-primary">
+                    <i class="fas fa-chart-line text-lg"></i>
+                    <span class="text-xs mt-1">Dashboard</span>
+                </a>
+                <a href="book.html" class="flex flex-col items-center py-2 text-gray-400">
+                    <i class="fas fa-book text-lg"></i>
+                    <span class="text-xs mt-1">BOOKS</span>
+                </a>
+                <a href="index.html" class="flex flex-col items-center py-2 text-gray-400">
+                    <i class="fas fa-sign-out-alt text-xl"></i>
+                    <span class="text-xs mt-1">logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- QR Scanner Modal -->
+        <!-- QR Modal -->
+        <div id="qrModal" class="fixed inset-0 z-50 hidden">
+            <div class="fixed inset-0 bg-black bg-opacity-50" id="qrModalOverlay"></div>
+            <div class="fixed inset-0 flex items-center justify-center p-4">
+                <div class="bg-white rounded-xl p-6 max-w-md w-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">YOUR QR CODE</h3>
+                        <button id="closeQrModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="bg-gray-100 h-48 rounded-lg flex items-center justify-center mb-4">
+                        <div class="text-center">
+                            <div class="bg-gray-100 h-48 rounded-lg flex items-center justify-center mb-4"
+                                id="qrCodeContainer">
+                                <!-- QR Code will appear here -->
+                                <div id="userQrCode"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 text-center">Check-in by showing your QR</p>
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="dashboard.js"></script>
+        <script>
+            // Mobile Menu Toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+            function openMobileMenu() {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenuPanel.classList.remove('-translate-x-full');
+                }, 10);
+            }
+
+            function closeMobileMenuFunc() {
+                mobileMenuPanel.classList.add('-translate-x-full');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+            }
+
+            mobileMenuBtn.addEventListener('click', openMobileMenu);
+            closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+            mobileMenuOverlay.addEventListener('click', closeMobileMenuFunc);
+            
+        </script>
+
+    </body>
+
+</html>

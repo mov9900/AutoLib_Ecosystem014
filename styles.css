@@ -1,0 +1,188 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Gradient Background */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f6fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding:20px;
+}
+
+/* Main container */
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+/* Form structure */
+.form-container {
+  background: white;
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+/* Input fields */
+form label {
+  display: block;
+  margin-bottom: 6px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #333;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.form-group .icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.form-group input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  font-size: 14px;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.options a {
+  text-decoration: none;
+  color: #4a4a8a;
+}
+
+/* Buttons */
+.btn,
+.dashboard-button {
+  width: 100%;
+  margin-top: 20px;
+  background: #4a4a8a;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn:hover,
+.dashboard-button:hover {
+  background-color: #3b3b70;
+}
+
+/* Links and text */
+p {
+  text-align: center;
+  margin-top: 16px;
+  color: #777;
+  font-size: 13px;
+}
+
+p a {
+  color: #4a4a8a;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+/* Error message */
+.error-message {
+  color: red;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Optional: Remember me & forget password */
+.forget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 25px 0 35px 0;
+  color: #ffffff;
+}
+
+#remember {
+  accent-color: #c8daf9;
+}
+
+.forget label {
+  display: flex;
+  align-items: center;
+}
+
+.forget label p {
+  margin-left: 8px;
+}
+
+.register {
+  text-align: center;
+  margin-top: 30px;
+  color: #ffffff;
+}
+
+/* MOBILE STYLES */
+@media(max-width: 600px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .form-group input {
+    font-size: 14px;
+  }
+
+  .btn,
+  .dashboard-button {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  p {
+    font-size: 12px;
+  }
+}

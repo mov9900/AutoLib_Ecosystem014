@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EDUSHELF</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Custom favicon -->
+  <link rel="icon" href="data:,">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="form-container" id="login-form">
+      <h2>LOGIN</h2>
+
+      <div id="login-error" class="error-message"></div>
+
+      <form id="loginForm">
+        <label for="loginEmail">Email</label>
+        <div class="form-group">
+          <span class="icon">📧</span>
+          <input type="email" id="loginEmail" required>
+        </div>
+
+        <label for="loginPassword">Password</label>
+        <div class="form-group">
+          <span class="icon">🔒</span>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <div class="options">
+          <a href="#" onclick="showResetPassword()">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn">Login</button>
+      </form>
+      <p>Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+    </div>
+
+    <div class="form-container" id="signup-form" style="display: none;">
+      <h2>Create Account</h2>
+      <div id="signup-error" class="error-message"></div>
+
+      <form id="signupForm">
+        <label for="signupName">Full Name</label>
+        <div class="form-group">
+          <input type="text" id="signupName" required>
+        </div>
+        <label for="signupEmail">Email</label>
+        <div class="form-group">
+          <input type="email" id="signupEmail" required>
+        </div>
+        <label for="signupEnrollment">Enrollment Number</label>
+        <div class="form-group">
+          <input type="text" id="signupEnrollment" required>
+        </div>
+        <label for="signupSemester">Semester</label>
+        <div class="form-group">
+          <input type="text" id="signupSemester" required>
+        </div>
+        <label for="signupdepartment">Department</label>
+        <div class="form-group">
+          <input type="text" id="signupdepartment" required>
+        </div>
+        <label for="signupPassword">Password</label>
+        <div class="form-group">
+          <input type="password" id="signupPassword" required>
+        </div>
+        <label for="signupConfirmPassword">Confirm Password</label>
+        <div class="form-group">
+          <input type="password" id="signupConfirmPassword" required>
+        </div>
+        <button type="submit" class="btn">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+    </div>
+    <!-- RESET PASSWORD FORM -->
+    <div class="form-container" id="resetPassword" style="display: none;">
+      <form id="resetPasswordForm" onsubmit="resetPassword(event)">
+        <h2>Reset Your Password</h2>
+
+        <label for="email">Email</label>
+        <div class="form-group">
+          <span class="icon">📧</span>
+          <input type="email" id="email" placeholder="Enter your email" required />
+        </div>
+
+        <button type="submit" class="btn">Send Reset Email</button>
+
+        <div id="message" style="margin-top: 10px;"></div>
+
+        <div class="options">
+          <a href="#" onclick="showLoginForm()">Back to login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+
+
+  <!-- Application Scripts -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="app.js"></script>
+  <script>
+    function showResetPassword() {
+      // Hide the login form (if it exists)
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.style.display = 'none';
+      }
+
+      // Show the reset password form
+      const resetForm = document.getElementById('resetPassword');
+      if (resetForm) {
+        resetForm.style.display = 'block';
+      }
+    }
+    function showLoginForm() {
+      const resetForm = document.getElementById('resetPassword');
+      if (resetForm) {
+        resetForm.style.display = 'none';
+      }
+
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+
+</html>
