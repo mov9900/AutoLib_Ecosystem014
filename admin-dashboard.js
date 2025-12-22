@@ -1,4 +1,4 @@
-// admin-dashboard.js (Final Fixed Version)
+// admin-dashboard.js (Final: Fixed User Name Lookup)
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 import {
@@ -6,7 +6,6 @@ import {
   getDoc,
   collection,
   query,
-  where,
   onSnapshot,
   orderBy,
   limit
@@ -23,7 +22,7 @@ const safeText = (id, text) => {
 let currentTab = 'today'; 
 let gateLogs = [];        
 let bookLogs = [];        
-let userCache = {};       
+let allUsersMap = {}; // Maps UserID -> User Data (Name, Enrollment)
 
 console.log('Admin Dashboard loaded.');
 
@@ -51,17 +50,22 @@ function renderBorrowed(borrowedDocs) {
   if (!container) return;
   container.innerHTML = borrowedDocs.map(d => {
     const mm = d.data;
+    // Handle user lookup for the borrowed list too
+    const user = allUsersMap[mm.userId] || { fullName: 'Unknown User' };
+    const userName = mm.userName || user.fullName;
+    
     const due = mm.dueDate ? (mm.dueDate.toDate ? mm.dueDate.toDate().toLocaleDateString() : new Date(mm.dueDate).toLocaleDateString()) : 'N/A';
+    
     return `
       <div class="borrow-row p-2 border-b text-sm">
         <div class="font-medium text-gray-800">${mm.title || mm.bookTitle || 'Book'}</div>
-        <div class="text-xs text-gray-500">User: ${mm.userId || 'Unknown'} • Due: <span class="text-red-500">${due}</span></div>
+        <div class="text-xs text-gray-500">By: ${userName} • Due: <span class="text-red-500">${due}</span></div>
       </div>`;
   }).join('');
 }
 
 /* ------------- CORE LOGIC: Logs Table ------------- */
-async function renderLogsTable() {
+function renderLogsTable() {
     const tbody = $('logsTableBody');
     if(!tbody) return;
 
@@ -93,11 +97,27 @@ async function renderLogsTable() {
     const rows = filteredData.map(log => {
         const dateObj = getDate(log);
         const dateStr = dateObj.toLocaleDateString();
-        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        let name = log.userName || log.name || 'Unknown';
-        let enrollment = log.enrollment || '—';
+        
+        // --- FIXED NAME LOOKUP ---
+        let name = 'Unknown';
+        let enrollment = '—';
         let branch = log.branch || log.userDepartment || '-';
+
+        // 1. Try direct fields first
+        if (log.userName) name = log.userName;
+        if (log.name) name = log.name;
+        if (log.enrollment) enrollment = log.enrollment;
+
+        // 2. If Unknown, try Lookup using userId from the Cache
+        if (log.userId && (name === 'Unknown' || enrollment === '—')) {
+            const userProfile = allUsersMap[log.userId];
+            if (userProfile) {
+                name = userProfile.fullName || userProfile.name;
+                enrollment = userProfile.enrollment || enrollment;
+                if(!branch || branch === '-') branch = userProfile.branch || userProfile.department || '-';
+            }
+        }
+        
         let timeIn = '-';
         let timeOut = '-';
         let transactionBadge = '';
@@ -110,11 +130,17 @@ async function renderLogsTable() {
             
             transactionBadge = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${color}">${type.toUpperCase()}</span>`;
             
+            // Format Time
+            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             if (isBorrow) timeIn = timeStr;
             else timeOut = timeStr;
             
+            // Add Book Title below name if available
             if(log.bookName || log.title) name += ` <br><span class="text-xs text-blue-600 italic">${log.bookName || log.title}</span>`;
+            
         } else {
+            // Gate Logs
+            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const type = (log.type || '').toLowerCase();
             if (type === 'entry' || log.timeIn) timeIn = log.timeIn || timeStr;
             if (type === 'exit' || log.timeOut) timeOut = log.timeOut || timeStr;
@@ -173,39 +199,53 @@ function startRealtimeListeners() {
   unsubscribes.forEach(u => u());
   unsubscribes = [];
 
-  // 1. Borrowed Books
+  // 1. Users (CRITICAL FOR NAMING)
+  // We fetch users FIRST so we can build the lookup map
+  unsubscribes.push(onSnapshot(collection(db, 'users'), (snap) => {
+    const usersList = [];
+    allUsersMap = {}; // Reset cache
+    snap.forEach(s => {
+        const u = s.data();
+        const uid = s.id;
+        usersList.push({ id: uid, ...u });
+        // Populate Map for fast lookup:
+        allUsersMap[uid] = u; 
+    });
+    renderUsers(usersList);
+    // Refresh table in case names were waiting to load
+    renderLogsTable();
+  }, (err) => console.error("Permission Error (Users):", err)));
+
+  // 2. Borrowed Books & Returned Books (Merged for History)
   const borrowedRef = collection(db, 'borrowedBooks');
   unsubscribes.push(onSnapshot(borrowedRef, (snap) => {
     let total = 0, overdue = 0;
     const now = Date.now();
     const borrowedForHistory = [];
+    const borrowedForList = [];
     
     snap.forEach(s => {
       const data = s.data();
+      // Metrics
       if (!data.returned) { 
           total++;
           const dVal = data.dueDate || data.dueAt;
           const dueMs = (dVal && dVal.toDate) ? dVal.toDate().getTime() : (dVal ? new Date(dVal).getTime() : 0);
           if (dueMs && dueMs < now) overdue++;
+          borrowedForList.push({ id: s.id, data });
       }
+      // Add to history list (contains userId!)
       borrowedForHistory.push({ id: s.id, ...data, source: 'borrowedBooks' });
     });
     
     safeText('totalBorrowedCount', String(total));
     safeText('overdueCount', String(overdue));
+    renderBorrowed(borrowedForList);
     mergeBookLogs(borrowedForHistory, 'borrowedBooks');
-  }, (err) => console.error("Permission Error (Borrowed):", err)));
+  }));
 
-  // 2. Users
-  unsubscribes.push(onSnapshot(collection(db, 'users'), (snap) => {
-    const users = [];
-    snap.forEach(s => users.push({ id: s.id, ...s.data() }));
-    renderUsers(users);
-  }, (err) => console.error("Permission Error (Users):", err)));
-
-  // 3. Books Metric (THIS WAS CAUSING ZERO BOOKS)
+  // 3. Books Metric
   unsubscribes.push(onSnapshot(collection(db, 'books'), (snap) => {
-    // This line updates the number on the dashboard:
     safeText('totalBooksCount', String(snap.size));
   }, (err) => console.error("Permission Error (Books):", err)));
 
@@ -217,7 +257,8 @@ function startRealtimeListeners() {
     if(currentTab === 'today' || currentTab === 'history') renderLogsTable();
   }, (err) => console.error("Permission Error (Logs):", err)));
 
-  // 5. Book Transactions (History)
+  // 5. Book Transactions (Old History)
+  // Warning: These might lack userId in DB, so will show "Unknown"
   const bookTransRef = collection(db, 'bookTransactions');
   const bookTransQuery = query(bookTransRef, orderBy('issueDate', 'desc'), limit(100));
   
@@ -226,7 +267,7 @@ function startRealtimeListeners() {
       snap.forEach(d => logs.push({ id: d.id, ...d.data(), source: 'bookTransactions' }));
       mergeBookLogs(logs, 'bookTransactions');
   }, (err) => {
-      // Fallback if index missing
+      // Fallback
       onSnapshot(query(bookTransRef, limit(100)), (s) => {
           const logs = [];
           s.forEach(d => logs.push({ id: d.id, ...d.data(), source: 'bookTransactions' }));
@@ -239,6 +280,14 @@ let rawBookData = { borrowedBooks: [], bookTransactions: [] };
 function mergeBookLogs(newData, source) {
     rawBookData[source] = newData;
     bookLogs = [...rawBookData.bookTransactions, ...rawBookData.borrowedBooks];
+    
+    // Sort combined logs by date
+    bookLogs.sort((a, b) => {
+        const dateA = a.issueDate || a.issuedAt || a.timestamp || 0;
+        const dateB = b.issueDate || b.issuedAt || b.timestamp || 0;
+        return (dateB.toDate ? dateB.toDate() : dateB) - (dateA.toDate ? dateA.toDate() : dateA);
+    });
+
     if(currentTab === 'books') renderLogsTable();
 }
 
