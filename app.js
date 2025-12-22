@@ -44,15 +44,24 @@ if (signupForm) {
     }
 
     // Basic Validation
-    function isValidEnrollment(enroll) {
-      // Customize this validation as per your needs
-      return (typeof enroll === 'string' && enroll.length > 0);
-    }
-    
-    if (!isValidEnrollment(enrollment)) {
-      alert('Invalid Enrollment Number.');
-      return;
-    }
+    // 1. Format Check (Keeps your '014' logic strict)
+function isValidEnrollment(enroll) {
+  return (
+    enroll.length === 12 &&
+    enroll.slice(2, 5) === '014' && // Keeps strict college code
+    /^[0-9]+$/.test(enroll)
+  );
+}
+
+// 2. Uniqueness Check (Ensures it is different for every user)
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+async function isEnrollmentTaken(enroll) {
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("enrollment", "==", enroll));
+  const snap = await getDocs(q);
+  return !snap.empty; // Returns true if it already exists
+}
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -188,4 +197,5 @@ if (resetForm) {
       if (msg) { msg.textContent = "Error: " + error.message; msg.style.color = "red"; }
     }
   });
+
 }
