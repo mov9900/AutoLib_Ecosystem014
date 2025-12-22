@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,21 +17,9 @@
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Hide Add Book button by default */
-        #openAddBookBtn {
-            display: none;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Hide Add Book button by default, JS will show it for admins */
+        #openAddBookBtn { display: none; }
     </style>
 </head>
 
@@ -44,20 +31,17 @@
                     <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3">
                         <i class="fas fa-book-open text-primary text-lg"></i>
                     </div>
-                    <h1 class="text-white text-lg font-semibold">AutoLib Ecosystem</h1>
+                    <h1 class="text-white text-lg font-semibold">Edushelf</h1>
                 </div>
             </div>
             <nav class="mt-5 flex-1 space-y-1 px-2">
-                <a href="dashboard.html"
-                    class="text-primary-100 hover:bg-primary-600 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                <a href="dashboard.html" class="text-primary-100 hover:bg-primary-600 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors" id="sidebarDashboardLink">
                     <i class="fas fa-chart-line mr-3 text-white"></i> Dashboard
                 </a>
-                <a href="book.html"
-                    class="bg-primary-600 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <a href="book.html" class="bg-primary-600 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                     <i class="fas fa-book mr-3 text-primary-200 group-hover:text-white"></i> BOOKS
                 </a>
-                <a href="index.html"
-                    class="text-primary-100 hover:bg-primary-600 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                <a href="index.html" class="text-primary-100 hover:bg-primary-600 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
                     <i class="fas fa-sign-out-alt text-xl mr-3 text-primary-200 group-hover:text-white"></i> LOGOUT
                 </a>
             </nav>
@@ -70,15 +54,13 @@
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 items-center justify-between">
                         <div class="flex items-center">
-                            <h1 class="text-2xl font-semibold text-gray-900">BOOKS</h1>
+                            <h1 class="text-2xl font-semibold text-gray-900">Book Management System</h1>
                         </div>
                         <div class="flex items-center space-x-4">
                             <button class="p-2 text-gray-400 hover:text-gray-500 transition-colors" id="openScannerBtn">
                                 <i class="fas fa-barcode text-xl"></i>
                             </button>
-                            <button
-                                class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                                id="openAddBookBtn">
+                            <button class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-colors" id="openAddBookBtn">
                                 <i class="fas fa-plus mr-2"></i> Add Book
                             </button>
                         </div>
@@ -90,20 +72,15 @@
                 <div class="px-4 sm:px-6 lg:px-8 py-8">
 
                     <div class="bg-white rounded-xl shadow-custom border border-gray-200 p-6 mb-8">
-                        <div
-                            class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
                             <div class="flex-1 max-w-lg">
                                 <div class="relative">
-                                    <input type="text" id="searchInput"
-                                        class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder="Search by title, author, or ISBN..." />
-                                    <i
-                                        class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text" id="searchInput" class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Search by title, author, or ISBN..." />
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 </div>
                             </div>
                             <div class="flex space-x-4">
-                                <select id="branchFilter"
-                                    class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <select id="branchFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                                     <option value>All Branch</option>
                                     <option value="ECE">ECE</option>
                                     <option value="ME">ME</option>
@@ -121,8 +98,7 @@
                                 <div class="flex items-center justify-between p-6 border-b border-gray-200">
                                     <div class="flex items-center space-x-4">
                                         <h3 class="text-lg font-semibold text-gray-900">Books Collection</h3>
-                                        <span id="totalBooksCount"
-                                            class="px-3 py-1 bg-primary-100 text-primary-700 text-sm font-medium rounded-full">Loading...</span>
+                                        <span id="totalBooksCount" class="px-3 py-1 bg-primary-100 text-primary-700 text-sm font-medium rounded-full">Loading...</span>
                                     </div>
                                 </div>
 
@@ -138,16 +114,14 @@
                         </div>
 
                         <div class="space-y-6">
-                            <div id="bookDetailsPanel"
-                                class="bg-white rounded-xl shadow-custom border border-gray-200 p-6 sticky top-6">
+                            <div id="bookDetailsPanel" class="bg-white rounded-xl shadow-custom border border-gray-200 p-6 sticky top-6">
                                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Book Details</h3>
                                 <div id="noSelection" class="text-center py-8">
                                     <i class="fas fa-book text-gray-300 text-4xl mb-4"></i>
                                     <p class="text-gray-500">Select a book to view details</p>
                                 </div>
                                 <div id="selectedBook" class="hidden">
-                                    <div
-                                        class="w-full h-48 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg mb-4 flex items-center justify-center">
+                                    <div class="w-full h-48 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg mb-4 flex items-center justify-center">
                                         <i class="fas fa-book-open text-white text-4xl"></i>
                                     </div>
                                     <h4 id="detailTitle" class="text-lg font-semibold text-gray-900 mb-1"></h4>
@@ -172,8 +146,7 @@
                                     </div>
                                     <div class="mt-6">
                                         <h5 class="text-sm font-semibold text-gray-900 mb-2">Current Borrowers</h5>
-                                        <div id="borrowerList"
-                                            class="bg-gray-50 rounded-lg p-3 max-h-40 overflow-y-auto text-xs space-y-2">
+                                        <div id="borrowerList" class="bg-gray-50 rounded-lg p-3 max-h-40 overflow-y-auto text-xs space-y-2">
                                             <p class="text-gray-400 italic">Checking records...</p>
                                         </div>
                                     </div>
@@ -192,8 +165,7 @@
             <div class="bg-white rounded-xl p-6 max-w-md w-full">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-900">Barcode Scanner</h3>
-                    <button id="closeBarcodeModal" class="text-gray-400 hover:text-gray-600"><i
-                            class="fas fa-times text-xl"></i></button>
+                    <button id="closeBarcodeModal" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
                 </div>
                 <div class="bg-gray-100 h-64 rounded-lg flex items-center justify-center mb-4 relative">
                     <div id="scannerContainer" class="w-full h-full"></div>
@@ -216,28 +188,21 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                            <input type="text" id="newBookTitle" required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
-                                placeholder="Enter book title" />
+                            <input type="text" id="newBookTitle" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="Enter book title" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Author</label>
-                            <input type="text" id="newBookAuthor" required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
-                                placeholder="Enter author name" />
+                            <input type="text" id="newBookAuthor" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="Enter author name" />
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">ISBN (Barcode)</label>
-                            <input type="text" id="newBookISBN" required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
-                                placeholder="Enter ISBN" />
+                            <input type="text" id="newBookISBN" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="Enter ISBN" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
-                            <select id="newBookDept"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                            <select id="newBookDept" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
                                 <option value="General">General</option>
                                 <option value="ECE">ECE</option>
                                 <option value="ME">ME</option>
@@ -249,20 +214,15 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Quantity (Stock)</label>
-                        <input type="number" id="newBookQuantity" min="1" value="1" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" />
+                        <input type="number" id="newBookQuantity" min="1" value="1" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                        <textarea id="newBookDesc" rows="3"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
-                            placeholder="Enter book description"></textarea>
+                        <textarea id="newBookDesc" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="Enter book description"></textarea>
                     </div>
                     <div class="flex justify-end space-x-4">
-                        <button type="button" id="cancelAddBook"
-                            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-                        <button type="submit"
-                            class="px-6 py-3 bg-primary hover:bg-primary-600 text-white rounded-lg">Add Book</button>
+                        <button type="button" id="cancelAddBook" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
+                        <button type="submit" class="px-6 py-3 bg-primary hover:bg-primary-600 text-white rounded-lg">Add Book</button>
                     </div>
                 </form>
             </div>
@@ -289,54 +249,35 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // --- Auth & Admin Check ---
         let isAdminGlobal = false;
+        let bookUnsubscribe = null; // Store subscription
 
-        // ... imports (getAuth, getFirestore, etc.)
-
-        // INSIDE your main script in book.html:
+        // --- Auth & Admin Check ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const db = getFirestore();
-
-                // 1. Check Role
-                let isAdmin = false;
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists() && userDoc.data().role === 'admin') {
-                        isAdmin = true;
+                        isAdminGlobal = true;
                     } else if (user.email && user.email.includes('admin')) {
-                        isAdmin = true;
+                        isAdminGlobal = true;
                     }
-                } catch (e) { console.log("Role check error", e); }
+                } catch(e) { console.log("User role check failed", e); }
 
-                // 2. Admin Logic
-                if (isAdmin) {
-                    // Show Admin Buttons
-                    const addBtn = document.getElementById('openAddBookBtn');
-                    if (addBtn) addBtn.style.display = 'block';
-
-                    // --- CRITICAL FIX: Update Sidebar Link ---
-                    // Finds the link pointing to "dashboard.html" and changes it
-                    const dashboardLink = document.querySelector('a[href="dashboard.html"]');
-                    if (dashboardLink) {
-                        dashboardLink.href = "admin-dashboard.html";
-                    }
-
-                    // Also fix mobile menu link if it exists
-                    const mobileDashLink = document.querySelector('#mobileMenu a[href="dashboard.html"]');
-                    if (mobileDashLink) {
-                        mobileDashLink.href = "admin-dashboard.html";
-                    }
+                // --- UPDATE UI BASED ON ROLE ---
+                if (isAdminGlobal) {
+                    document.getElementById('openAddBookBtn').style.display = 'block';
+                    document.querySelectorAll('a[href="dashboard.html"]').forEach(link => {
+                        link.href = "admin-dashboard.html";
+                    });
+                } else {
+                    document.getElementById('openAddBookBtn').style.display = 'none';
                 }
-                // 3. User Logic
-                else {
-                    // Ensure Add Book is hidden
-                    const addBtn = document.getElementById('openAddBookBtn');
-                    if (addBtn) addBtn.style.display = 'none';
-                }
+
+                // --- FIX: SUBSCRIBE TO BOOKS ONLY AFTER LOGIN ---
+                subscribeToBooks(); 
+
             } else {
-                // Not logged in
                 window.location.href = "index.html";
             }
         });
@@ -349,7 +290,6 @@
         const addBookForm = document.getElementById('addBookForm');
         let allBooksCache = [];
 
-        // --- Global Function for Scanner to Call ---
         window.openAddBookModalWithISBN = (isbn) => {
             addBookModal.classList.remove('hidden');
             document.getElementById('newBookISBN').value = isbn;
@@ -360,14 +300,19 @@
 
         // --- Book Sync & Render ---
         function subscribeToBooks() {
+            if (bookUnsubscribe) bookUnsubscribe(); // Unsubscribe previous listener if exists
+
             const q = query(collection(db, "books"));
-            onSnapshot(q, (snapshot) => {
+            bookUnsubscribe = onSnapshot(q, (snapshot) => {
                 allBooksCache = [];
                 snapshot.forEach(doc => {
                     allBooksCache.push({ id: doc.id, ...doc.data() });
                 });
                 updateTotalCount();
                 renderBooks(allBooksCache);
+            }, (error) => {
+                console.error("Book sync error:", error);
+                booksGrid.innerHTML = '<div class="col-span-full text-center text-red-500 py-10">Error loading books. Please refresh.</div>';
             });
         }
 
@@ -415,9 +360,9 @@
             const term = searchInput.value.toLowerCase();
             const branch = branchFilter.value;
             const filtered = allBooksCache.filter(book => {
-                const matchTerm = (book.title?.toLowerCase().includes(term) ||
-                    book.author?.toLowerCase().includes(term) ||
-                    (book.isbn && book.isbn.includes(term)));
+                const matchTerm = (book.title?.toLowerCase().includes(term) || 
+                                 book.author?.toLowerCase().includes(term) || 
+                                 (book.isbn && book.isbn.includes(term)));
                 const matchBranch = branch === "" || (book.department === branch);
                 return matchTerm && matchBranch;
             });
@@ -444,9 +389,6 @@
             const listEl = document.getElementById('borrowerList');
             listEl.innerHTML = '<p class="text-gray-400 italic">Checking records...</p>';
 
-            // RULE FRIENDLY FETCH:
-            // We assume if the user is NOT admin, the fetch will fail or return empty due to rules.
-            // We wrap in try/catch to prevent errors from breaking the page.
             try {
                 if (!isAdminGlobal) {
                     listEl.innerHTML = '<p class="text-gray-500 italic">Restricted: Admin Only</p>';
@@ -456,7 +398,7 @@
                 const borrowsRef = collection(db, "borrowedBooks");
                 const q = query(borrowsRef, where("bookId", "==", book.isbn || book.id), where("returned", "==", false));
                 const snapshot = await getDocs(q);
-
+                
                 if (snapshot.empty) {
                     listEl.innerHTML = '<p class="text-gray-500">No active borrowers.</p>';
                 } else {
@@ -474,13 +416,11 @@
                     });
                 }
             } catch (err) {
-                // If permission denied error occurs, show safe message
                 console.log("Details fetch restricted:", err.code);
                 listEl.innerHTML = '<p class="text-gray-500 italic">Restricted: Admin Only</p>';
             }
         }
 
-        // --- Add Book Handlers ---
         document.getElementById('openAddBookBtn').addEventListener('click', () => addBookModal.classList.remove('hidden'));
         document.getElementById('closeAddBookModal').addEventListener('click', () => addBookModal.classList.add('hidden'));
         document.getElementById('cancelAddBook').addEventListener('click', () => addBookModal.classList.add('hidden'));
@@ -518,8 +458,7 @@
             }
         });
 
-        subscribeToBooks();
+        // NOTE: subscribeToBooks() removed from global scope and moved into onAuthStateChanged
     </script>
 </body>
-
 </html>
