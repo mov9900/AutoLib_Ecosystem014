@@ -13,7 +13,7 @@ import {
   serverTimestamp,
   getDoc
 } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 // Helper: safe element getter
 function $id(id) {
   return document.getElementById(id);
@@ -54,8 +54,6 @@ function isValidEnrollment(enroll) {
 }
 
 // 2. Uniqueness Check (Ensures it is different for every user)
-import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-
 async function isEnrollmentTaken(enroll) {
   const usersRef = collection(db, "users");
   const q = query(usersRef, where("enrollment", "==", enroll));
@@ -199,3 +197,4 @@ if (resetForm) {
   });
 
 }
+
