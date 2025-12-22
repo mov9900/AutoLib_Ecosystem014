@@ -64,13 +64,29 @@ qrModalOverlay.addEventListener('click', () => qrModal.classList.add('hidden'));
 
 // Central auth state handling
 let currentUser = null;
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        // If not logged in, redirect immediately
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // Step 1: User is logged in. Get their ID.
+        const uid = user.uid;
+
+        // Step 2: THE DISTINCTION
+        // Check if this ID exists in the 'admins' database collection
+        const adminSnap = await getDoc(doc(db, 'admins', uid));
+
+        if (adminSnap.exists()) {
+            // ✅ SUCCESS: User is an Admin. Let them stay.
+            console.log("Welcome Admin");
+        } else {
+            // ❌ FAIL: User is logged in, BUT not an Admin.
+            // Kick them out immediately.
+            alert("You are not an admin!");
+            window.location.href = "index.html";
+        }
+    } else {
+        // User not logged in at all
         window.location.href = "index.html";
-        return;
     }
-    currentUser = user;
+});
     console.log("Logged in UID:", user.uid);
 
     // Borrowed books listener (update stats panel)
@@ -113,6 +129,7 @@ qrScannerBtn.addEventListener('click', () => {
 });
 
 // Display user's name in header
+
 
 
 
